@@ -1,0 +1,4 @@
+koolaid:
+  users:
+    show:
+      title: "OH YEAH!!!! {{@name}} has {{@color}} eyes... OH YEAH!!!!"

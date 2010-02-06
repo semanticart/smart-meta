@@ -1,0 +1,4 @@
+en:
+  users:
+    show:
+      title: "{{@name}} has {{@color}} eyes"

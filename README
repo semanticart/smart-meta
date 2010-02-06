@@ -1,0 +1,76 @@
+= SmartMeta
+
+SmartMeta is a simple plugin to allow you to set titles, descriptions, and keywords easily on pages.  You just need to define your controller and action pairs in your translation files and SmartMeta will handle the rest.  It can make use of your instance variables, helper methods, and even go through relationships to access relevant variables for interpolations.
+
+It isn't the most exciting thing ever, but I've found myself using this pattern enough that extracting it seems like it will save me time in the future.
+
+There are likely other plugins that do the same thing (and possibly better).  If you know of another one that works in a similar manner but is arguably better, message me on github and let me know.
+
+== Installation
+
+Install as a Rails plugin:
+
+  ./script/plugin install git://github.com/semanticart/smart-meta.git
+
+== Usage Overview
+
+Once you've installed, to get rolling you only have to do two things:
+
+1)  Fill out your translation files with titles, descriptions, and keywords (as you wish)
+
+2)  Use smart_title, smart_description, and smart_keywords where you want SmartMeta to work (probably in your application layout).
+
+
+=== Example
+
+Fill out your translation files in #{RAILS_ROOT}/config/locales/ like the following example:
+
+  en:
+    users:
+      show:
+        title: "{{@user.name}} has {{@user.hair.color}} hair"
+        description: {{@user.name}}'s page on my site"
+        keywords: user, {{@user.name}}, {{page_keywords}}, etc. etc.
+
+
+Here I've defined that my Users controller's #show method should have a title based off of the user's name and hair color.  When I call the smart_title method, it will look for an instance variable named @user and pass it name to populate the first argument and the look to the user's hair for the color to populate the second argument.
+
+The keywords makes use of page_keywords which is a method we'll define in either our ApplicationHelper or our UsersHelper.
+
+=== Failover
+
+This isn't a catch-all solution so I recommend implementing it something like this in your application layout:
+
+  <title><%= yield(:html_title) || smart_title || t('default.title') %></title>
+
+  <meta name="description" content="<%= yield(:meta_description) || smart_description || t('default.description') %>" />
+
+  <meta name="keywords" content="<%= yield(:meta_keywords) || smart_keywords || t('default.keywords') %>" />
+
+
+Here I'm telling the layout that if I've defined a :html_title via content_for elsewhere, use that.  Otherwise use the smart_title.  If both of those return nil available (for instance if we're on an action we haven't defined a title for), then use the site's default title.
+
+You'll need to specify your own default title in your translations.  Example:
+
+  en:
+    default:
+      title: "Some rad title for my site"
+
+
+For completeness sake, here's an example of using content_for to set the title in a view:
+
+  <% content_for(:html_title, "Some title to be used instead of smart_title and default title") %>
+
+=== Other uses
+
+You can use this plugin to handle things other than titles, descriptions, or keywords.  Simply call smart_meta_for and pass what you want.  To access "users.show.robots" you just need to define
+
+  en:
+    users:
+      show:
+        robots: "NOINDEX"
+
+and then call smart_meta_for(:robots) in your view/layout/etc.
+
+
+Copyright (c) 2010 Jeffrey Chupp, released under the MIT license
