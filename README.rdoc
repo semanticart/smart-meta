@@ -29,8 +29,8 @@ Fill out your translation files in #{RAILS_ROOT}/config/locales/ like the follow
     users:
       show:
         title: "{{@user.name}} has {{@user.hair.color}} hair"
-        description: {{@user.name}}'s page on my site"
-        keywords: user, {{@user.name}}, {{page_keywords}}, etc. etc.
+        description: "{{@user.name}}'s page on my site"
+        keywords: "user, {{@user.name}}, {{page_keywords}}, etc. etc."
 
 
 Here I've defined that my Users controller's #show method should have a title based off of the user's name and hair color.  When I call the smart_title method, it will look for an instance variable named @user and pass it name to populate the first argument and the look to the user's hair for the color to populate the second argument.
